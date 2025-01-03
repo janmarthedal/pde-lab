@@ -1,6 +1,7 @@
 from typing import Iterable
 import numpy as np
 from scipy import integrate, sparse
+from scipy.sparse.linalg import spsolve
 
 def lagrange_1_00(x: float) -> float:
     return (1 - x) ** 2 / 4
@@ -74,11 +75,20 @@ def bilinear_to_matrix(elements, points, value_type: str, multiplier=1.0):
     S += sparse.triu(S, 1).T
     return S
 
-def enforce_row(C, i):
-    assert C.ndim == 2
-    assert C.shape[0] == C.shape[1]
-    assert i < C.shape[0]
-    return sparse.vstack([C[0:i, :], sparse.eye(1, C.shape[1], i), C[(i + 1):, :]], format='csr')
+# `indices` must be sorted in ascending order
+def enforce_rows(C, indices):
+    if not indices:
+        return C
+    blocks = []
+    i = 0
+    for row in indices:
+        if i < row:
+            blocks.append(C[i:row])
+        blocks.append(sparse.eye(1, C.shape[1], row))
+        i = row + 1
+    if i < C.shape[0]:
+        blocks.append(C[i:])
+    return sparse.vstack(blocks, format='csr')
 
 points, elements = make_1d_mesh(0, 1, 5)
 print("points", points)
@@ -93,13 +103,12 @@ print(C.toarray())
 
 R = np.zeros((len(points),))
 R[0] = 1
-C = enforce_row(C, 0)
 R[5] = 2
-C = enforce_row(C, 5)
+C = enforce_rows(C, [0, 5])
 
 print(C.toarray())
 print(R)
 
-a = sparse.linalg.spsolve(C, R)
+a = spsolve(C, R)
 
 print(a)
