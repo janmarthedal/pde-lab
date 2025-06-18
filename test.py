@@ -1,8 +1,9 @@
+import time
 import numpy as np
 from meshio import Mesh
 from meshgen import rect2d
 from scipy.integrate import dblquad
-from scipy.linalg import det, inv, svd
+from scipy.linalg import det, inv
 from scipy.sparse import coo_array, csr_array
 
 
@@ -34,13 +35,20 @@ def get_triangle_grad_fun():
     ])
 
 
-def triangle_element_grad_var(element_points, basis_grad, i: int, j: int) -> float:
+def triangle_element_grad_var(element_points, elem_grad, i: int, j: int) -> float:
     def integrand(s, t):
-        bg = basis_grad(np.array([s, t]))
+        bg = elem_grad(np.array([s, t]))
         J = bg.T @ element_points
         Jinv = inv(J)
         jac = np.abs(det(J))
         return jac * np.dot(Jinv @ bg[i], Jinv @ bg[j])
+    # def integrand(s, t):
+    #     bg = elem_grad(np.array([s, t]))
+    #     J = bg.T @ element_points
+    #     U, s, _ = svd(J)
+    #     jacobian = np.abs(np.prod(s))
+    #     sinv = np.reciprocal(s)
+    #     return jacobian * np.dot(sinv * (U.T @ bg[i]), sinv * (U.T @ bg[j]))
     v, _ = dblquad(integrand, 0, 1, 0, lambda s: 1 - s)
     return v
 
@@ -49,11 +57,16 @@ def triangle_element_grad_const(J: np.array, grad_i: np.array, grad_j: np.array)
     Jinv = inv(J)
     # 0.5 is the integral of 1 with s=0..1, t=0..1-s (area of half a square)
     return 0.5 * np.abs(det(J)) * np.dot(Jinv @ grad_i, Jinv @ grad_j)
+    # U, s, _ = svd(J)
+    # jacobian = np.abs(np.prod(s))
+    # sinv = np.reciprocal(s)
+    # d = np.dot(sinv * (U.T @ grad_i), sinv * (U.T @ grad_j))
+    # return 0.5 * jacobian * d
 
 
 def triangle_grad_dot_grad(points: np.array, elements: np.array) -> coo_array:
     order = elements.shape[1]
-    basis_grad = get_triangle_grad_fun()
+    elem_grad = get_triangle_grad_fun()
 
     # pre-allocate np arrays instead?
     row: list[float] = []
@@ -63,18 +76,18 @@ def triangle_grad_dot_grad(points: np.array, elements: np.array) -> coo_array:
     for element_idx in elements:
         element_points = points[element_idx, :]
 
-        if callable(basis_grad):
+        if callable(elem_grad):
             J = None
         else:
-            J = np.dot(basis_grad.T, element_points)
+            J = np.dot(elem_grad.T, element_points)
 
         for i in range(0, order):
             for j in range(0, order):
                 # exploit symmetry?
                 if J is None:
-                    v = triangle_element_grad_var(element_points, basis_grad, i, j)
+                    v = triangle_element_grad_var(element_points, elem_grad, i, j)
                 else:
-                    v = triangle_element_grad_const(J, basis_grad[i], basis_grad[j])
+                    v = triangle_element_grad_const(J, elem_grad[i], elem_grad[j])
                 row.append(element_idx[i])
                 col.append(element_idx[j])
                 data.append(v)
@@ -110,7 +123,11 @@ print("cells")
 for cb in mesh.cells:
     print(f"  {cb.type}: {cb.data.shape}")
 
+start = time.time()
 A = assemble(mesh)
+end = time.time()
 
-np.set_printoptions(linewidth=200)
+print(f"Time: {end - start}")
+
+np.set_printoptions(linewidth=200, precision=4)
 print(A.toarray())
