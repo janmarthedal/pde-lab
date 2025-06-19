@@ -1,8 +1,8 @@
 from numpy import array
-from .base_element import BaseElement
+from .element import Element
 
 
-class Triangle(BaseElement):
+class Triangle(Element):
 
     _grad = array([
             [-1., -1.],

@@ -1,9 +1,12 @@
 from abc import ABCMeta, abstractmethod
 
-class BaseElement(metaclass=ABCMeta):
+class Element(metaclass=ABCMeta):
 
     @abstractmethod
     def eval(self, p):
+        """
+
+        """
         return p
 
     @abstractmethod

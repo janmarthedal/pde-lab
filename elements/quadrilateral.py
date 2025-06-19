@@ -1,8 +1,8 @@
 from numpy import array
-from .base_element import BaseElement
+from .element import Element
 
 
-class Quadrilateral(BaseElement):
+class Quadrilateral(Element):
 
     def eval(self, p):
         s, t = p
