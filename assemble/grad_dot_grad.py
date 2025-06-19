@@ -1,6 +1,6 @@
 from numpy import array, float64, dot, abs, zeros, empty, int32
 from meshio import Mesh
-from scipy.linalg import inv, det, solve
+from scipy.linalg import det, solve
 from scipy.sparse import coo_array, csr_array, diags_array
 from elements.element import Element
 from integrators.base_integrator import BaseIntegrator
@@ -18,8 +18,9 @@ def element_grad_dot_grad(
     def integrand(p):
         element_grads = element.grad(p).T
         J = element_grads @ element_points
-        element_grads_ij = inv(J) @ element_grads[:, (i, j)]
-        # element_grads_ij = solve(J, element_grads[:, (i, j)])
+        # Using `inv(A) @ b` is often faster than `solve(A, b)` for small A,
+        # but generally not recommended for, e.g., numerical stability
+        element_grads_ij = solve(J, element_grads[:, [i, j]])
         return abs(det(J)) * dot(element_grads_ij[:, 0], element_grads_ij[:, 1])
 
     v = integrator.integrate(integrand)
