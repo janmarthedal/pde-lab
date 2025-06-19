@@ -4,6 +4,10 @@ from .element import Element
 
 class Quadrilateral(Element):
 
+    @property
+    def order(self):
+        return 2
+
     def eval(self, p):
         s, t = p
         return 0.25 * array(

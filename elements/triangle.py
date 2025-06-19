@@ -10,6 +10,10 @@ class Triangle(Element):
             [ 0.,  1.]
         ])
 
+    @property
+    def order(self):
+        return 2
+
     def eval(self, p):
         r = self._grad @ p
         r[0] += 1.0

@@ -1,6 +1,6 @@
-from numpy import array, float64, dot, abs, zeros, empty, int32
+from numpy import array, float64, dot, abs, zeros, empty, int32, sqrt
 from meshio import Mesh
-from scipy.linalg import det, solve
+from scipy.linalg import det, lstsq, solve
 from scipy.sparse import coo_array, csr_array, diags_array
 from elements.element import Element
 from integrators.base_integrator import BaseIntegrator
@@ -8,23 +8,42 @@ from elements.triangle import Triangle
 from integrators.triangle0_integrator import Triangle0Integrator
 
 
-def element_grad_dot_grad(
-    element_points: array,
-    element: Element,
-    integrator: BaseIntegrator,
-    i: int,
-    j: int,
+def element_grad_dot_grad_embed(
+    element_points: array, element: Element, integrator: BaseIntegrator, i: int, j: int
+) -> float:
+    # This case is for when the elements are mapped into
+    # a space with higher dimensions
+    def integrand(p):
+        grads = element.grad(p).T
+        J = grads @ element_points
+        grads_ij = lstsq(J, grads[:, [i, j]], lapack_driver='gelsy')[0]
+        jacobian = sqrt(det(J @ J.T))
+        return jacobian * dot(grads_ij[:, 0], grads_ij[:, 1])
+
+    return integrator.integrate(integrand)
+
+
+def element_grad_dot_grad_normal(
+    element_points: array, element: Element, integrator: BaseIntegrator, i: int, j: int
 ) -> float:
     def integrand(p):
-        element_grads = element.grad(p).T
-        J = element_grads @ element_points
-        # Using `inv(A) @ b` is often faster than `solve(A, b)` for small A,
+        grads = element.grad(p).T
+        J = grads @ element_points
+        # `inv(A) @ b` is often faster than `solve(A, b)` for small A,
         # but generally not recommended for, e.g., numerical stability
-        element_grads_ij = solve(J, element_grads[:, [i, j]])
-        return abs(det(J)) * dot(element_grads_ij[:, 0], element_grads_ij[:, 1])
+        grads_ij = solve(J, grads[:, [i, j]])
+        jacobian = abs(det(J))
+        return jacobian * dot(grads_ij[:, 0], grads_ij[:, 1])
 
-    v = integrator.integrate(integrand)
-    return v
+    return integrator.integrate(integrand)
+
+
+def element_grad_dot_grad(
+    element_points: array, element: Element, integrator: BaseIntegrator, i: int, j: int
+) -> float:
+    if element.order < element_points.shape[1]:
+        return element_grad_dot_grad_embed(element_points, element, integrator, i, j)
+    return element_grad_dot_grad_normal(element_points, element, integrator, i, j)
 
 
 def element_assemble_grad_dot_grad(

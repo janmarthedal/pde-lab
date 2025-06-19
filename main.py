@@ -1,9 +1,17 @@
 import time
 from numpy import set_printoptions
+from scipy.spatial.transform import Rotation
 from meshgen import rect2d
 from assemble.grad_dot_grad import assemble_grad_dot_grad
 
-mesh = rect2d(5, 4, 5, 3)
+mesh = rect2d(5, 4, 50, 30)
+
+# r = Rotation.from_euler('zyx', [90, 45, 30], degrees=True)
+# mesh.points = r.apply(mesh.points)
+
+mesh.points = mesh.points[:, 0:2]
+
+# mesh.write('rect.vtu')
 
 print("== Mesh")
 print(f"points: {mesh.points.shape}")
@@ -17,5 +25,6 @@ end = time.time()
 
 print(f"Time: {end - start}")
 
-set_printoptions(linewidth=200, precision=4)
-print(A.toarray())
+if A.shape[1] < 20:
+    set_printoptions(linewidth=200, precision=4)
+    print(A.toarray())
