@@ -1,63 +1,64 @@
-from numpy import array, float64, dot, abs, zeros, empty, int32, sqrt
+from numpy import array, float64, abs, newaxis, transpose, prod
+from numpy.linalg import solve as np_solve, det as np_det, svd
 from meshio import Mesh
-from scipy.linalg import det, lstsq, solve
-from scipy.sparse import coo_array, csr_array, diags_array
+from scipy.sparse import coo_array, csr_array
 from elements.element import Element
 from integrators.base_integrator import BaseIntegrator
 from elements.triangle import Triangle
 from integrators.triangle0_integrator import Triangle0Integrator
 
 
-def element_grad_dot_grad(
-    element_points: array, element: Element, integrator: BaseIntegrator, i: int, j: int
-) -> float:
-    def integrand(p):
-        grads = element.grad(p).T
-        J = grads @ element_points
-        if J.shape[0] < J.shape[1]:
-            # This case is for when the elements are mapped into
-            # a space with higher dimensions
-            grads_ij = lstsq(J, grads[:, [i, j]], lapack_driver='gelsy')[0]
-            jacobian = sqrt(det(J @ J.T))
-        else:
-            # `inv(A) @ b` is often faster than `solve(A, b)` for small A,
-            # but generally not recommended for, e.g., numerical stability
-            grads_ij = solve(J, grads[:, [i, j]])
-            jacobian = abs(det(J))
-        return jacobian * dot(grads_ij[:, 0], grads_ij[:, 1])
-
-    return integrator.integrate(integrand)
+def bilinear_fn(g1, g2):
+    return g1[0] * g2[0] + g1[1] * g2[1]
 
 
 def element_assemble_grad_dot_grad(
     points: array, elements: array, element: Element, integrator: BaseIntegrator
 ) -> coo_array:
-    order = elements.shape[1]
-    dof = points.shape[0]
-    coord_len = elements.shape[0] * (order - 1) * order // 2
+    # quad_points = array([[2./3., 1./6.], [1./3., 2./6.], [1./3., 1./6.]])
+    # quad_weights = 0.5 * array([1./3., 1./3., 1./3.])
+    quad_points = array([[0., 0.]])
+    quad_weights = 0.5 * array([1.])
 
-    diag = zeros((dof,), dtype=float64)
-    coords = empty((2, coord_len), dtype=int32)
-    data = empty((coord_len,), dtype=float64)
+    print(f"Points shape: {points.shape}")
+    print(f"Elements shape: {elements.shape}")
 
-    idx = 0
-    for element_idx in elements:
-        element_points = points[element_idx, :]
+    element_count, element_order = elements.shape
+    point_count, point_dim = points.shape
+    quad_point_count, element_dim = quad_points.shape
 
-        for i in range(0, order):
-            v = element_grad_dot_grad(element_points, element, integrator, i, i)
-            diag[element_idx[i]] += v
+    element_points = points[elements]
+    assert element_points.shape == (element_count, element_order, point_dim)
+    g = array([element.grad(q).T for q in quad_points])
+    assert g.shape == (quad_point_count, element_dim, element_order)
+    g = g[:, newaxis, :, :]
+    assert g.shape == (quad_point_count, 1, element_dim, element_order)
 
-            for j in range(0, i):
-                v = element_grad_dot_grad(element_points, element, integrator, i, j)
-                coords[:, idx] = (element_idx[i], element_idx[j])
-                data[idx] = v
-                idx += 1
+    J = g @ element_points[newaxis, :, :, :]
 
-    coords.sort(axis=0)
-    d = diags_array(diag, offsets=0)
-    a = coo_array((data, coords), shape=(dof, dof), dtype=float64).tocsr()
-    return a + d + a.T
+    if point_dim > element_dim:
+        U, s, Vh = svd(J, full_matrices=False)
+        grads = transpose(Vh, [0, 1, 3, 2]) @ ((transpose(U, [0, 1, 3, 2]) @ g) / s[:, :, :, newaxis])
+        jacobians = prod(s, axis=2)
+    else:
+        grads = np_solve(J, g)
+        jacobians = abs(np_det(J.reshape(-1, point_dim, point_dim)).reshape(quad_point_count, element_count))
+
+    print(f"jacobians.shape: {jacobians.shape}")
+
+    R = csr_array((point_count, point_count), dtype=float64)
+
+    for i in range(0, element_order):
+        ni = elements[:, i]
+        gi = grads[:, :, :, i].T
+        for j in range(0, element_order):
+            nj = elements[:, j]
+            gj = grads[:, :, :, j].T
+            b = bilinear_fn(gi, gj).T
+            v = quad_weights @ (b * jacobians)
+            R += coo_array((v, (ni, nj)), shape=(point_count, point_count), dtype=float64)
+
+    return R
 
 
 def assemble_grad_dot_grad(mesh: Mesh) -> csr_array:

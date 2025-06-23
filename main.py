@@ -1,10 +1,10 @@
 import time
 from numpy import set_printoptions
-from scipy.spatial.transform import Rotation
+# from scipy.spatial.transform import Rotation
 from meshgen import rect2d
 from assemble.grad_dot_grad import assemble_grad_dot_grad
 
-mesh = rect2d(5, 4, 50, 30)
+mesh = rect2d(5, 4, 5, 3)
 
 # r = Rotation.from_euler('zyx', [90, 45, 30], degrees=True)
 # mesh.points = r.apply(mesh.points)
@@ -18,6 +18,9 @@ print(f"points: {mesh.points.shape}")
 print("cells")
 for cb in mesh.cells:
     print(f"  {cb.type}: {cb.data.shape}")
+
+# import cProfile
+# cProfile.run('assemble_grad_dot_grad(mesh)')
 
 start = time.time()
 A = assemble_grad_dot_grad(mesh)
