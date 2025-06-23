@@ -1,7 +1,7 @@
 import time
 from numpy import set_printoptions
 # from scipy.spatial.transform import Rotation
-from meshgen import rect2d
+from mesh.generate import rect2d
 from assemble.grad_dot_grad import assemble_grad_dot_grad
 
 mesh = rect2d(5, 4, 5, 3)

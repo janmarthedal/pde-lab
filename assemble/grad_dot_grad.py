@@ -20,9 +20,6 @@ def element_assemble_grad_dot_grad(
     quad_points = array([[0., 0.]])
     quad_weights = 0.5 * array([1.])
 
-    print(f"Points shape: {points.shape}")
-    print(f"Elements shape: {elements.shape}")
-
     element_count, element_order = elements.shape
     point_count, point_dim = points.shape
     quad_point_count, element_dim = quad_points.shape
@@ -43,8 +40,6 @@ def element_assemble_grad_dot_grad(
     else:
         grads = np_solve(J, g)
         jacobians = abs(np_det(J.reshape(-1, point_dim, point_dim)).reshape(quad_point_count, element_count))
-
-    print(f"jacobians.shape: {jacobians.shape}")
 
     R = csr_array((point_count, point_count), dtype=float64)
 

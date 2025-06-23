@@ -1,7 +1,7 @@
 from meshio import Mesh
 import numpy as np
 
-def rect2d(x: float, y: float, nx: float, ny: float) -> Mesh:
+def rect2d(x: float, y: float, nx: int, ny: int) -> Mesh:
     xs = np.linspace(0.0, x, nx)
     ys = np.linspace(0.0, y, ny)
     points = [(x, y) for y in ys for x in xs]
