@@ -26,9 +26,7 @@ def element_assemble_grad_dot_grad(
 
     element_points = points[elements]
     assert element_points.shape == (element_count, element_order, point_dim)
-    g = array([element.grad(q).T for q in quad_points])
-    assert g.shape == (quad_point_count, element_dim, element_order)
-    g = g[:, newaxis, :, :]
+    g = matrix_transpose(element.grad(quad_points))[:, newaxis, :, :]
     assert g.shape == (quad_point_count, 1, element_dim, element_order)
 
     J = g @ element_points[newaxis, :, :, :]

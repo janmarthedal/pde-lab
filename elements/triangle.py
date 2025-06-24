@@ -1,4 +1,4 @@
-from numpy import array
+from numpy import array, ones
 from .element import Element
 
 
@@ -15,5 +15,8 @@ class Triangle(Element):
         r[0] += 1.0
         return r
 
-    def grad(self, _p):
-        return self._grad
+    def grad(self, p):
+        """
+        p: A list of points, p.shape[1] == 2
+        """
+        return ones((p.shape[0], 1, 1)) * self._grad
