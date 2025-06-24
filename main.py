@@ -1,7 +1,7 @@
 import time
 from numpy import set_printoptions
 from mesh.generate import rect2d
-from assembly.grad_dot_grad import assemble_grad_dot_grad
+from assembly.matrix import from_bilinear, grad_dot_grad
 # from scipy.spatial.transform import Rotation
 
 mesh = rect2d(5, 4, 5, 3, addz=False)
@@ -21,7 +21,7 @@ for cb in mesh.cells:
 # cProfile.run('assemble_grad_dot_grad(mesh)')
 
 start = time.time()
-A = assemble_grad_dot_grad(mesh)
+A = from_bilinear(mesh, grad_dot_grad)
 end = time.time()
 
 print(f"Time: {end - start}")

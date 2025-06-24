@@ -1,6 +1,6 @@
 import unittest
 from mesh.generate import rect2d
-from assembly.grad_dot_grad import assemble_grad_dot_grad
+from assembly.matrix import from_bilinear, grad_dot_grad
 from numpy.testing import assert_array_almost_equal
 from scipy.sparse import coo_array
 from scipy.spatial.transform import Rotation
@@ -28,14 +28,14 @@ class AssemblyTests(unittest.TestCase):
 
     def test_rectangle(self):
         mesh = rect2d(5, 4, 5, 3)
-        A = assemble_grad_dot_grad(mesh)
+        A = from_bilinear(mesh, grad_dot_grad)
         assert_array_almost_equal(A.toarray(), self.Arect)
 
     def test_rectangle_3d(self):
         mesh = rect2d(5, 4, 5, 3, addz=True)
         r = Rotation.from_euler("zyx", [90, 45, 30], degrees=True)
         mesh.points = r.apply(mesh.points)
-        A = assemble_grad_dot_grad(mesh)
+        A = from_bilinear(mesh, grad_dot_grad)
         assert_array_almost_equal(A.toarray(), self.Arect)
 
 

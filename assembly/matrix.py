@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from numpy import float64, abs, newaxis, prod, ndarray, sum, matrix_transpose
 from numpy.linalg import solve as np_solve, det as np_det, svd
 from meshio import Mesh
@@ -8,12 +9,16 @@ from quadrature.base import BaseQuadrature
 from quadrature.triangle import TriangleQuadrature
 
 
-def bilinear_fn(g1: ndarray, g2: ndarray):
+def grad_dot_grad(g1: ndarray, g2: ndarray) -> ndarray:
     return sum(g1 * g2, axis=0)
 
 
-def element_assemble_grad_dot_grad(
-    points: ndarray, elements: ndarray, element: Element, quadrature: BaseQuadrature
+def _bilinear_for_element_type(
+    points: ndarray,
+    elements: ndarray,
+    element: Element,
+    quadrature: BaseQuadrature,
+    bilinear_fn: Callable[[ndarray, ndarray], ndarray],
 ) -> coo_array:
     quad_points, quad_weights = quadrature.points_and_weights()
 
@@ -54,19 +59,22 @@ def element_assemble_grad_dot_grad(
     return R
 
 
-def assemble_grad_dot_grad(mesh: Mesh, norder=1) -> csr_array:
+def from_bilinear(
+    mesh: Mesh, bilinear_fn: Callable[[ndarray, ndarray], ndarray], norder=1
+) -> csr_array:
     points = mesh.points
-    dim = points.shape[0]
-    A = csr_array((dim, dim), dtype=float64)
+    point_count = points.shape[0]
+    A = csr_array((point_count, point_count), dtype=float64)
 
     for cell_block in mesh.cells:
         if cell_block.type == "triangle":
             element = Triangle()
             quadrature = TriangleQuadrature(norder)
-            A += element_assemble_grad_dot_grad(
-                points, cell_block.data, element, quadrature
-            )
         else:
-            print(f"Unsupported cell block {cell_block}")
+            raise RuntimeError(f"Unsupported cell block {cell_block}")
+
+        A += _bilinear_for_element_type(
+            points, cell_block.data, element, quadrature, bilinear_fn
+        )
 
     return A
