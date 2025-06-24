@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
-class Element(metaclass=ABCMeta):
 
+class Element(metaclass=ABCMeta):
     @abstractmethod
     def eval(self, p):
         return p

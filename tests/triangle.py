@@ -5,7 +5,6 @@ from elements.triangle import Triangle
 
 
 class ElementTests(unittest.TestCase):
-
     def test_triangle(self):
         e = Triangle()
         r = e.eval(array([1.0, 2.0]))

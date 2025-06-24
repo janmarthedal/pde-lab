@@ -17,8 +17,8 @@ def element_assemble_grad_dot_grad(
 ) -> coo_array:
     # quad_points = array([[2./3., 1./6.], [1./3., 2./6.], [1./3., 1./6.]])
     # quad_weights = 0.5 * array([1./3., 1./3., 1./3.])
-    quad_points = array([[0., 0.]])
-    quad_weights = 0.5 * array([1.])
+    quad_points = array([[0.0, 0.0]])
+    quad_weights = 0.5 * array([1.0])
 
     element_count, element_order = elements.shape
     point_count, point_dim = points.shape
@@ -50,7 +50,9 @@ def element_assemble_grad_dot_grad(
             gj = grads[:, :, :, j].T
             b = bilinear_fn(gi, gj).T
             v = quad_weights @ (b * jacobians)
-            R += coo_array((v, (ni, nj)), shape=(point_count, point_count), dtype=float64)
+            R += coo_array(
+                (v, (ni, nj)), shape=(point_count, point_count), dtype=float64
+            )
 
     return R
 

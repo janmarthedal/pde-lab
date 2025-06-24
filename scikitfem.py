@@ -11,7 +11,7 @@ def a(u, v, _):
     return dot(grad(u), grad(v))
 
 
-mesh = Mesh.load('rect.vtu')
+mesh = Mesh.load("rect.vtu")
 
 Vh = fem.Basis(mesh, fem.ElementTriP1())
 

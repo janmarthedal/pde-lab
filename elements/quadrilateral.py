@@ -3,7 +3,6 @@ from .element import Element
 
 
 class Quadrilateral(Element):
-
     def eval(self, p):
         s, t = p
         return 0.25 * array(
@@ -17,6 +16,7 @@ class Quadrilateral(Element):
 
     def grad(self, p):
         s, t = p
+        # fmt: off
         return 0.25 * array(
             [
                 [-1.0 + t, -1.0 + s],
@@ -25,3 +25,4 @@ class Quadrilateral(Element):
                 [-1.0 - t,  1.0 - s],
             ]
         )
+        # fmt: on
