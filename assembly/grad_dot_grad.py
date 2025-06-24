@@ -1,4 +1,4 @@
-from numpy import array, float64, abs, newaxis, transpose, prod, ndarray, sum
+from numpy import array, float64, abs, newaxis, prod, ndarray, sum, matrix_transpose
 from numpy.linalg import solve as np_solve, det as np_det, svd
 from meshio import Mesh
 from scipy.sparse import coo_array, csr_array
@@ -32,14 +32,15 @@ def element_assemble_grad_dot_grad(
     assert g.shape == (quad_point_count, 1, element_dim, element_order)
 
     J = g @ element_points[newaxis, :, :, :]
+    assert J.shape == (quad_point_count, element_count, element_dim, point_dim)
 
     if point_dim > element_dim:
         U, s, Vh = svd(J, full_matrices=False)
-        grads = transpose(Vh, [0, 1, 3, 2]) @ ((transpose(U, [0, 1, 3, 2]) @ g) / s[:, :, :, newaxis])
+        grads = matrix_transpose(Vh) @ ((matrix_transpose(U) @ g) / s[:, :, :, newaxis])
         jacobians = prod(s, axis=2)
     else:
         grads = np_solve(J, g)
-        jacobians = abs(np_det(J.reshape(-1, point_dim, point_dim)).reshape(quad_point_count, element_count))
+        jacobians = abs(np_det(J))
 
     R = csr_array((point_count, point_count), dtype=float64)
 
