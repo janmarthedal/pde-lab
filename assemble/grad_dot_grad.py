@@ -1,4 +1,4 @@
-from numpy import array, float64, abs, newaxis, transpose, prod
+from numpy import array, float64, abs, newaxis, transpose, prod, ndarray, sum
 from numpy.linalg import solve as np_solve, det as np_det, svd
 from meshio import Mesh
 from scipy.sparse import coo_array, csr_array
@@ -8,12 +8,12 @@ from elements.triangle import Triangle
 from integrators.triangle0_integrator import Triangle0Integrator
 
 
-def bilinear_fn(g1, g2):
-    return g1[0] * g2[0] + g1[1] * g2[1]
+def bilinear_fn(g1: ndarray, g2: ndarray):
+    return sum(g1 * g2, axis=0)
 
 
 def element_assemble_grad_dot_grad(
-    points: array, elements: array, element: Element, integrator: BaseIntegrator
+    points: ndarray, elements: ndarray, element: Element, integrator: BaseIntegrator
 ) -> coo_array:
     # quad_points = array([[2./3., 1./6.], [1./3., 2./6.], [1./3., 1./6.]])
     # quad_weights = 0.5 * array([1./3., 1./3., 1./3.])

@@ -1,15 +1,14 @@
 import unittest
 from mesh.generate import rect2d
 from assemble.grad_dot_grad import assemble_grad_dot_grad
-from numpy.testing import assert_array_almost_equal, assert_array_equal
-from numpy import array, hstack, zeros
+from numpy.testing import assert_array_almost_equal
 from scipy.sparse import coo_array
 from scipy.spatial.transform import Rotation
 
 
 class AssembleTests(unittest.TestCase):
 
-    Adesired = coo_array(([
+    Arect = coo_array(([
         1.1125, -0.8, -0.3125, -0.8, 2.225, -0.8, -0.625, -0.8, 2.225, -0.8, -0.625, -0.8, 2.225, -0.8,
         -0.625, -0.8, 1.1125, -0.3125, -0.3125, 2.225, -1.6, -0.3125, -0.625, -1.6, 4.45, -1.6, -0.625,
         -0.625, -1.6, 4.45, -1.6, -0.625, -0.625, -1.6, 4.45, -1.6, -0.625, -0.3125, -1.6, 2.225, -0.3125,
@@ -30,15 +29,14 @@ class AssembleTests(unittest.TestCase):
     def test_rectangle(self):
         mesh = rect2d(5, 4, 5, 3)
         A = assemble_grad_dot_grad(mesh)
-        assert_array_almost_equal(A.toarray(), self.Adesired)
+        assert_array_almost_equal(A.toarray(), self.Arect)
 
     def test_rectangle_3d(self):
-        mesh = rect2d(5, 4, 5, 3)
-        mesh.points = hstack([mesh.points, zeros((mesh.points.shape[0], 1))])
-        # r = Rotation.from_euler('zyx', [90, 45, 30], degrees=True)
-        # mesh.points = r.apply(mesh.points)
+        mesh = rect2d(5, 4, 5, 3, addz=True)
+        r = Rotation.from_euler('zyx', [90, 45, 30], degrees=True)
+        mesh.points = r.apply(mesh.points)
         A = assemble_grad_dot_grad(mesh)
-        assert_array_almost_equal(A.toarray(), self.Adesired)
+        assert_array_almost_equal(A.toarray(), self.Arect)
 
 
 if __name__ == "__main__":
