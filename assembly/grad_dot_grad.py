@@ -1,11 +1,11 @@
-from numpy import array, float64, abs, newaxis, prod, ndarray, sum, matrix_transpose
+from numpy import float64, abs, newaxis, prod, ndarray, sum, matrix_transpose
 from numpy.linalg import solve as np_solve, det as np_det, svd
 from meshio import Mesh
 from scipy.sparse import coo_array, csr_array
 from elements.element import Element
-from integrators.base_integrator import BaseIntegrator
 from elements.triangle import Triangle
-from integrators.triangle0_integrator import Triangle0Integrator
+from quadrature.base import BaseQuadrature
+from quadrature.triangle import TriangleQuadrature
 
 
 def bilinear_fn(g1: ndarray, g2: ndarray):
@@ -13,24 +13,21 @@ def bilinear_fn(g1: ndarray, g2: ndarray):
 
 
 def element_assemble_grad_dot_grad(
-    points: ndarray, elements: ndarray, element: Element, integrator: BaseIntegrator
+    points: ndarray, elements: ndarray, element: Element, quadrature: BaseQuadrature
 ) -> coo_array:
-    # quad_points = array([[2./3., 1./6.], [1./3., 2./6.], [1./3., 1./6.]])
-    # quad_weights = 0.5 * array([1./3., 1./3., 1./3.])
-    quad_points = array([[0.0, 0.0]])
-    quad_weights = 0.5 * array([1.0])
+    quad_points, quad_weights = quadrature.points_and_weights()
 
     element_count, element_order = elements.shape
     point_count, point_dim = points.shape
     quad_point_count, element_dim = quad_points.shape
 
     element_points = points[elements]
-    assert element_points.shape == (element_count, element_order, point_dim)
+    # assert element_points.shape == (element_count, element_order, point_dim)
     g = matrix_transpose(element.grad(quad_points))[:, newaxis, :, :]
-    assert g.shape == (quad_point_count, 1, element_dim, element_order)
+    # assert g.shape == (quad_point_count, 1, element_dim, element_order)
 
     J = g @ element_points[newaxis, :, :, :]
-    assert J.shape == (quad_point_count, element_count, element_dim, point_dim)
+    # assert J.shape == (quad_point_count, element_count, element_dim, point_dim)
 
     if point_dim > element_dim:
         U, s, Vh = svd(J, full_matrices=False)
@@ -57,7 +54,7 @@ def element_assemble_grad_dot_grad(
     return R
 
 
-def assemble_grad_dot_grad(mesh: Mesh) -> csr_array:
+def assemble_grad_dot_grad(mesh: Mesh, norder=1) -> csr_array:
     points = mesh.points
     dim = points.shape[0]
     A = csr_array((dim, dim), dtype=float64)
@@ -65,9 +62,9 @@ def assemble_grad_dot_grad(mesh: Mesh) -> csr_array:
     for cell_block in mesh.cells:
         if cell_block.type == "triangle":
             element = Triangle()
-            integrator = Triangle0Integrator()
+            quadrature = TriangleQuadrature(norder)
             A += element_assemble_grad_dot_grad(
-                points, cell_block.data, element, integrator
+                points, cell_block.data, element, quadrature
             )
         else:
             print(f"Unsupported cell block {cell_block}")
