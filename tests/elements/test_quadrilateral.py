@@ -1,11 +1,19 @@
 import unittest
 import numpy as np
 from elements.quadrilateral import Quadrilateral
-from .test_triangle import test_element_grad, make_2d_dirs
+from .test_triangle import test_element_grad, make_2d_dirs, test_base_points
 
 
 class QuadrilateralTests(unittest.TestCase):
-    POINTS = np.array(
+    # fmt: off
+    BASE_POINTS = np.array([
+        [-1.0, -1.0],
+        [1.0, -1.0],
+        [1.0, 1.0],
+        [-1.0, 1.0],
+    ])
+    # fmt: on
+    SAMPLE_POINTS = np.array(
         [
             [-1.0, -1.0],
             [-0.5, -1.0],
@@ -34,7 +42,7 @@ class QuadrilateralTests(unittest.TestCase):
             [1.0, 1.0],
         ]
     )
-    DIRS = make_2d_dirs(
+    SAMPLE_DIRS = make_2d_dirs(
         [
             0.0,
             10.0,
@@ -64,9 +72,13 @@ class QuadrilateralTests(unittest.TestCase):
         ]
     )
 
+    def test_base_points(self):
+        test_base_points(Quadrilateral(), self.BASE_POINTS)
+
     def test_grad(self):
-        el = Quadrilateral()
-        test_element_grad(el, QuadrilateralTests.POINTS, QuadrilateralTests.DIRS)
+        test_element_grad(
+            Quadrilateral(), QuadrilateralTests.SAMPLE_POINTS, QuadrilateralTests.SAMPLE_DIRS
+        )
 
 
 if __name__ == "__main__":
