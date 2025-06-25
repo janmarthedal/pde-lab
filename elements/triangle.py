@@ -1,23 +1,30 @@
-from numpy import array, ones
+from numpy import array, ones, zeros
 from .element import Element
 
 
 class Triangle(Element):
-    # fmt: off
-    _grad = array([
-        [-1.0, -1.0],
-        [ 1.0,  0.0],
-        [ 0.0,  1.0]
-    ])
-    # fmt: on
-
     def eval(self, p):
-        r = self._grad @ p
-        r[0] += 1.0
-        return r
+        # If p.shape == (2, n)
+        # then eval(p) == (3, n)
+        s, t = p
+        # fmt: off
+        return array([
+            1 - s - t,
+            s,
+            t
+        ])
+        # fmt: on
 
     def grad(self, p):
-        """
-        p: A list of points, p.shape[1] == 2
-        """
-        return ones((p.shape[0], 1, 1)) * self._grad
+        # If p.shape == (2, n)
+        # then grad(p) == (3, 2, n)
+        shape = p[0].shape
+        o = ones(shape)
+        z = zeros(shape)
+        # fmt: off
+        return array([
+            [-o, -o],
+            [ o,  z],
+            [ z,  o]
+        ])
+        # fmt: on

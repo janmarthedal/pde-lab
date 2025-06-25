@@ -28,7 +28,7 @@ def _bilinear_for_element_type(
 
     element_points = points[elements]
     # assert element_points.shape == (element_count, element_order, point_dim)
-    g = matrix_transpose(element.grad(quad_points))[:, newaxis, :, :]
+    g = element.grad(quad_points.T)[:, :, newaxis, :].T
     # assert g.shape == (quad_point_count, 1, element_dim, element_order)
 
     J = g @ element_points[newaxis, :, :, :]
