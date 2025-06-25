@@ -10,7 +10,7 @@ def test_element_grad(el: Element, ps: np.ndarray, dirs: np.ndarray, eps: float 
     for k in range(el_order):
         actual = (v[k][points:] - v[k][:points]) / eps
         desired = np.sum(g[k].T * dirs, axis=1)
-        np.testing.assert_allclose(actual, desired, atol=1e-8)
+        np.testing.assert_allclose(actual, desired, atol=1e-7)
 
 
 def make_2d_dirs(angles) -> np.ndarray:

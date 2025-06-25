@@ -4,7 +4,7 @@ from elements.line import Line
 from .helpers import test_element_grad, test_base_points
 
 
-class TriangleTests(unittest.TestCase):
+class LineTests(unittest.TestCase):
     # fmt: off
     BASE_POINTS = np.array([
         [0.0],
