@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from elements.quadrilateral import Quadrilateral
-from .test_triangle import test_element_grad, make_2d_dirs, test_base_points
+from .helpers import test_element_grad, make_2d_dirs, test_base_points
 
 
 class QuadrilateralTests(unittest.TestCase):
