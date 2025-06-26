@@ -1,7 +1,8 @@
 import time
-from numpy import set_printoptions
+import numpy as np
 from mesh.generate import rect2d
 from assemble.matrix import from_bilinear, grad_dot_grad
+from assemble.vector import from_linear
 # from scipy.spatial.transform import Rotation
 
 mesh = rect2d(5, 4, 5, 3, addz=False)
@@ -20,12 +21,19 @@ for cb in mesh.cells:
 # import cProfile
 # cProfile.run('assemble_grad_dot_grad(mesh)')
 
-start = time.time()
+def linear_fn(vals: np.ndarray, coords: np.ndarray):
+    return np.prod(np.sin(np.pi * coords), axis=0) * vals
+
+t1 = time.time()
 A = from_bilinear(mesh, grad_dot_grad)
-end = time.time()
+t2 = time.time()
+b = from_linear(mesh, linear_fn, norder=2)
+t3 = time.time()
 
-print(f"Time: {end - start}")
+print(f"Time A: {t2 - t1}")
+print(f"Time b: {t3 - t2}")
 
-if A.shape[1] < 20:
-    set_printoptions(linewidth=200, precision=4)
+# np.set_printoptions(linewidth=200, precision=4)
+if A.shape[1] < 0:
     print(A.toarray())
+print(b)

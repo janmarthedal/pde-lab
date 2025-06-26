@@ -25,6 +25,6 @@ class Triangle(Element):
         return array([
             [-o, -o],
             [ o,  z],
-            [ z,  o]
+            [ z,  o],
         ])
         # fmt: on

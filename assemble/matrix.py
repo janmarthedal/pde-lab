@@ -29,7 +29,7 @@ def _bilinear_for_element_type(
     element_points = points[elements]
     # assert element_points.shape == (_element_count, element_order, point_dim)
     grads_local = element.gradient(quad_points.T)[:, :, newaxis, :].T
-    # assert g.shape == (_quad_point_count, 1, element_dim, element_order)
+    # assert grads_local.shape == (_quad_point_count, 1, element_dim, element_order)
 
     J = grads_local @ element_points[newaxis, :, :, :]
     # assert J.shape == (_quad_point_count, _element_count, element_dim, point_dim)
