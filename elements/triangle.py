@@ -1,11 +1,11 @@
-from numpy import array, ones, zeros
+from numpy import array, ones, zeros, ndarray
 from .element import Element
 
 
 class Triangle(Element):
-    def eval(self, p):
+    def value(self, p: ndarray) -> ndarray:
         # If p.shape == (2, n)
-        # then eval(p) == (3, n)
+        # then value(p) == (3, n)
         s, t = p
         # fmt: off
         return array([
@@ -15,9 +15,9 @@ class Triangle(Element):
         ])
         # fmt: on
 
-    def grad(self, p):
+    def gradient(self, p: ndarray) -> ndarray:
         # If p.shape == (2, n)
-        # then grad(p) == (3, 2, n)
+        # then gradient(p) == (3, 2, n)
         shape = p[0].shape
         o = ones(shape)
         z = zeros(shape)

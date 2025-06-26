@@ -1,11 +1,11 @@
-from numpy import array
+from numpy import array, ndarray
 from .element import Element
 
 
 class Line3(Element):
-    def eval(self, p):
+    def value(self, p: ndarray) -> ndarray:
         # If p.shape == (1, n)
-        # then eval(p) == (3, n)
+        # then value(p) == (3, n)
         s = p[0]
         # fmt: off
         return array([
@@ -15,9 +15,9 @@ class Line3(Element):
         ])
         # fmt: on
 
-    def grad(self, p):
+    def gradient(self, p: ndarray) -> ndarray:
         # If p.shape == (1, n)
-        # then grad(p) == (2, 1, n)
+        # then gradient(p) == (2, 1, n)
         s = p[0]
         # fmt: off
         return array([

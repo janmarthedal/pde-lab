@@ -15,8 +15,8 @@ LINE_SAMPLE_DIRS = np.array(
 )
 
 def test_element_grad(el: Element, ps: np.ndarray, dirs: np.ndarray, eps: float = 1e-8):
-    v = el.eval(np.vstack([ps, ps + eps * dirs]).T)
-    g = el.grad(ps.T)
+    v = el.value(np.vstack([ps, ps + eps * dirs]).T)
+    g = el.gradient(ps.T)
     points = ps.shape[0]
     el_order = v.shape[0]
     for k in range(el_order):
@@ -32,5 +32,5 @@ def make_2d_dirs(angles) -> np.ndarray:
 
 
 def test_base_points(el: Element, points: np.ndarray):
-    v = el.eval(points.T)
+    v = el.value(points.T)
     np.testing.assert_allclose(v, np.eye(points.shape[0]))

@@ -28,28 +28,30 @@ def _bilinear_for_element_type(
 
     element_points = points[elements]
     # assert element_points.shape == (element_count, element_order, point_dim)
-    g = element.grad(quad_points.T)[:, :, newaxis, :].T
+    grads_local = element.gradient(quad_points.T)[:, :, newaxis, :].T
     # assert g.shape == (quad_point_count, 1, element_dim, element_order)
 
-    J = g @ element_points[newaxis, :, :, :]
+    J = grads_local @ element_points[newaxis, :, :, :]
     # assert J.shape == (quad_point_count, element_count, element_dim, point_dim)
 
     if point_dim > element_dim:
         U, s, Vh = svd(J, full_matrices=False)
-        grads = matrix_transpose(Vh) @ ((matrix_transpose(U) @ g) / s[:, :, :, newaxis])
+        gradients = matrix_transpose(Vh) @ (
+            (matrix_transpose(U) @ grads_local) / s[:, :, :, newaxis]
+        )
         jacobians = prod(s, axis=2)
     else:
-        grads = np_solve(J, g)
+        gradients = np_solve(J, grads_local)
         jacobians = abs(np_det(J))
 
     R = csr_array((point_count, point_count), dtype=float64)
 
     for i in range(0, element_order):
         ni = elements[:, i]
-        gi = grads[:, :, :, i].T
+        gi = gradients[:, :, :, i].T
         for j in range(0, element_order):
             nj = elements[:, j]
-            gj = grads[:, :, :, j].T
+            gj = gradients[:, :, :, j].T
             b = bilinear_fn(gi, gj).T
             v = quad_weights @ (b * jacobians)
             R += coo_array(
@@ -63,8 +65,7 @@ def from_bilinear(
     mesh: Mesh, bilinear_fn: Callable[[ndarray, ndarray], ndarray], norder=1
 ) -> csr_array:
     points = mesh.points
-    point_count = points.shape[0]
-    A = csr_array((point_count, point_count), dtype=float64)
+    A = csr_array((points.shape[0], points.shape[0]), dtype=float64)
 
     for cell_block in mesh.cells:
         if cell_block.type == "triangle":
