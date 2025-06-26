@@ -22,17 +22,17 @@ def _bilinear_for_element_type(
 ) -> coo_array:
     quad_points, quad_weights = quadrature.points_and_weights()
 
-    element_count, element_order = elements.shape
+    _element_count, element_order = elements.shape
     point_count, point_dim = points.shape
-    quad_point_count, element_dim = quad_points.shape
+    _quad_point_count, element_dim = quad_points.shape
 
     element_points = points[elements]
-    # assert element_points.shape == (element_count, element_order, point_dim)
+    # assert element_points.shape == (_element_count, element_order, point_dim)
     grads_local = element.gradient(quad_points.T)[:, :, newaxis, :].T
-    # assert g.shape == (quad_point_count, 1, element_dim, element_order)
+    # assert g.shape == (_quad_point_count, 1, element_dim, element_order)
 
     J = grads_local @ element_points[newaxis, :, :, :]
-    # assert J.shape == (quad_point_count, element_count, element_dim, point_dim)
+    # assert J.shape == (_quad_point_count, _element_count, element_dim, point_dim)
 
     if point_dim > element_dim:
         U, s, Vh = svd(J, full_matrices=False)

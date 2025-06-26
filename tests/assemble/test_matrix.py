@@ -1,12 +1,12 @@
 import unittest
 from mesh.generate import rect2d
-from assembly.matrix import from_bilinear, grad_dot_grad
+from assemble.matrix import from_bilinear, grad_dot_grad
 from numpy.testing import assert_array_almost_equal
 from scipy.sparse import coo_array
 from scipy.spatial.transform import Rotation
 
 
-class AssemblyTests(unittest.TestCase):
+class MatrixTests(unittest.TestCase):
     # fmt: off
     Arect = coo_array(([
         1.1125, -0.8, -0.3125, -0.8, 2.225, -0.8, -0.625, -0.8, 2.225, -0.8, -0.625,
