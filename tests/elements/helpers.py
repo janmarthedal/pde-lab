@@ -1,6 +1,18 @@
 import numpy as np
 from elements.element import Element
 
+LINE_SAMPLE_POINTS = np.array(
+    [
+        [-0.1], [-0.2], [-0.3], [-0.4], [-0.5], [-0.6], [-0.7], [-0.8], [-0.9], [-1.0],
+        [0.0], [0.1], [0.2], [0.3], [0.4], [0.5], [0.6], [0.7], [0.8], [0.9], [1.0],
+    ]
+)
+LINE_SAMPLE_DIRS = np.array(
+    [
+        [1.0], [1.0], [1.0], [1.0], [1.0], [1.0], [1.0], [1.0], [1.0], [1.0],
+        [-1.0], [-1.0], [-1.0], [-1.0], [-1.0], [-1.0], [-1.0], [-1.0], [-1.0], [-1.0], [-1.0],
+    ]
+)
 
 def test_element_grad(el: Element, ps: np.ndarray, dirs: np.ndarray, eps: float = 1e-8):
     v = el.eval(np.vstack([ps, ps + eps * dirs]).T)

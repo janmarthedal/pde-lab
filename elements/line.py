@@ -9,8 +9,8 @@ class Line(Element):
         s = p[0]
         # fmt: off
         return array([
-            1 - s,
-            s,
+            0.5 * (1.0 - s),
+            0.5 * (1.0 + s),
         ])
         # fmt: on
 
@@ -20,7 +20,7 @@ class Line(Element):
         o = ones_like(p[0].shape)
         # fmt: off
         return array([
-            [-o],
-            [ o],
+            [-0.5 * o],
+            [ 0.5 * o],
         ])
         # fmt: on
