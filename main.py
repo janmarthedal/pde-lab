@@ -21,8 +21,10 @@ for cb in mesh.cells:
 # import cProfile
 # cProfile.run('assemble_grad_dot_grad(mesh)')
 
+
 def linear_fn(vals: np.ndarray, coords: np.ndarray):
     return np.prod(np.sin(np.pi * coords), axis=0) * vals
+
 
 t1 = time.time()
 A = from_bilinear(mesh, grad_dot_grad)

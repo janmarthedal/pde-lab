@@ -77,7 +77,9 @@ class QuadrilateralTests(unittest.TestCase):
 
     def test_grad(self):
         test_element_grad(
-            Quadrilateral(), QuadrilateralTests.SAMPLE_POINTS, QuadrilateralTests.SAMPLE_DIRS
+            Quadrilateral(),
+            QuadrilateralTests.SAMPLE_POINTS,
+            QuadrilateralTests.SAMPLE_DIRS,
         )
 
 

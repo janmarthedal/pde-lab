@@ -1,12 +1,12 @@
 from abc import ABCMeta, abstractmethod
-from numpy import ndarray
+import numpy as np
 
 
 class Element(metaclass=ABCMeta):
     @abstractmethod
-    def value(self, p: ndarray) -> ndarray:
+    def value(self, p: np.ndarray) -> np.ndarray:
         raise NotImplementedError()
 
     @abstractmethod
-    def gradient(self, p: ndarray) -> ndarray:
+    def gradient(self, p: np.ndarray) -> np.ndarray:
         raise NotImplementedError()

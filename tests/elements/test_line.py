@@ -1,7 +1,12 @@
 import unittest
 import numpy as np
 from elements.line import Line
-from .helpers import test_element_grad, test_base_points, LINE_SAMPLE_POINTS, LINE_SAMPLE_DIRS
+from .helpers import (
+    test_element_grad,
+    test_base_points,
+    LINE_SAMPLE_POINTS,
+    LINE_SAMPLE_DIRS,
+)
 
 
 class LineTests(unittest.TestCase):

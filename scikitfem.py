@@ -11,7 +11,7 @@ def a(u, v, _):
 
 
 @fem.LinearForm
-def l(v, w):
+def lf(v, w):
     x, y = w.x  # global coordinates
     f = np.sin(np.pi * x) * np.sin(np.pi * y)
     return f * v
@@ -24,7 +24,7 @@ Vh = fem.Basis(mesh, fem.ElementTriP1())
 t1 = time.time()
 A = a.assemble(Vh)
 t2 = time.time()
-b = l.assemble(Vh)
+b = lf.assemble(Vh)
 t3 = time.time()
 
 print(f"Stiffness matrix size: {A.shape[0]}x{A.shape[1]}")
