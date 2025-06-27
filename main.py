@@ -35,7 +35,7 @@ t3 = time.time()
 print(f"Time A: {t2 - t1}")
 print(f"Time b: {t3 - t2}")
 
-# np.set_printoptions(linewidth=200, precision=4)
+np.set_printoptions(linewidth=200, precision=16)
 if A.shape[1] < 0:
     print(A.toarray())
 print(b)
