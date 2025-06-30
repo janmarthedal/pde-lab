@@ -1,6 +1,5 @@
 import unittest
 import numpy as np
-from numpy.testing import assert_array_almost_equal
 from scipy.spatial.transform import Rotation
 from mesh.generate import rect2d
 from assemble.vector import from_linear
@@ -38,7 +37,7 @@ class VectorTests(unittest.TestCase):
     def test_rectangle(self):
         mesh = rect2d(5, 4, 5, 3)
         b = from_linear(mesh, linear_fn, norder=2)
-        assert_array_almost_equal(b, self.brect)
+        np.testing.assert_array_almost_equal(b, self.brect)
 
     def test_rectangle_yz(self):
         mesh = rect2d(5, 4, 5, 3, addz=True)
@@ -46,14 +45,14 @@ class VectorTests(unittest.TestCase):
             [[0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0]]
         )
         b = from_linear(mesh, linear_fn_yz, norder=2)
-        assert_array_almost_equal(b, self.brect)
+        np.testing.assert_array_almost_equal(b, self.brect)
 
     def test_rectangle_3d(self):
         mesh = rect2d(5, 4, 5, 3, addz=True)
         r = Rotation.from_euler("zyx", [90, 45, 30], degrees=True)
         mesh.points = r.apply(mesh.points)
         b = from_linear(mesh, linear_fn, norder=2)
-        assert_array_almost_equal(
+        np.testing.assert_array_almost_equal(
             b,
             np.array(
                 [
