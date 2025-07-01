@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from meshio import Mesh
-from mesh.boundary import mesh_boundary, mesh_prune_points
+from mesh.boundary import mesh_boundary
 
 
 class BoundaryTests(unittest.TestCase):
@@ -53,28 +53,7 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(len(bmesh.cells), 1)
         self.assertEqual(bmesh.cells[0].type, "line")
         np.testing.assert_array_equal(
-            bmesh.cells[0].data,
-            [
-                [0, 1],
-                [5, 0],
-                [1, 2],
-                [2, 3],
-                [3, 4],
-                [4, 9],
-                [10, 5],
-                [9, 14],
-                [11, 10],
-                [12, 11],
-                [13, 12],
-                [14, 13],
-            ],
-        )
-
-        umesh = mesh_prune_points(bmesh)
-        self.assertEqual(len(umesh.cells), 1)
-        self.assertEqual(umesh.cells[0].type, "line")
-        np.testing.assert_array_equal(
-            umesh.points,
+            bmesh.points,
             [
                 [0.0, 0.0],
                 [1.25, 0.0],
@@ -91,7 +70,7 @@ class BoundaryTests(unittest.TestCase):
             ],
         )
         np.testing.assert_array_equal(
-            umesh.cells[0].data,
+            bmesh.cells[0].data,
             [
                 [0, 1],
                 [5, 0],
@@ -108,5 +87,5 @@ class BoundaryTests(unittest.TestCase):
             ],
         )
         np.testing.assert_array_equal(
-            umesh.point_data["point_idx"], [0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14]
+            bmesh.point_data["point_idx"], [0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14]
         )
