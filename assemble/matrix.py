@@ -1,7 +1,7 @@
 from collections.abc import Callable
 import numpy as np
-from meshio import Mesh
 from scipy.sparse import coo_array, csr_array
+from mesh.mesh import Mesh
 from elements.element import Element
 from elements.triangle import Triangle
 from quadrature.base import BaseQuadrature

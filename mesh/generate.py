@@ -1,5 +1,5 @@
-from meshio import Mesh
 import numpy as np
+from .mesh import Mesh
 
 
 def rect2d(x: float, y: float, nx: int, ny: int, addz=False) -> Mesh:

@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from meshio import Mesh
+from mesh.mesh import Mesh
 from mesh.boundary import mesh_boundary
 
 

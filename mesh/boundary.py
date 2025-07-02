@@ -1,6 +1,5 @@
 import numpy as np
-from meshio import Mesh
-
+from .mesh import Mesh
 
 _BOUNDARY_SELECTORS = {
     "line": ("vertex", [[0], [1]]),
