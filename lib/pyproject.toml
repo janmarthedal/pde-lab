@@ -3,3 +3,8 @@ line-length = 88
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
+
+[tool.pyright]
+exclude = [
+    "**/__pycache__"
+]
