@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from elements.triangle import Triangle
+from pardeqsi.elements.triangle import Triangle
 from .helpers import test_element_grad, make_2d_dirs, test_base_points
 
 

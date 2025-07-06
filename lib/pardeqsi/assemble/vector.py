@@ -1,10 +1,10 @@
 from collections.abc import Callable
 import numpy as np
-from mesh.mesh import Mesh
-from elements.element import Element
-from elements.triangle import Triangle
-from quadrature.base import BaseQuadrature
-from quadrature.triangle import TriangleQuadrature
+from ..mesh.mesh import Mesh
+from ..elements.element import Element
+from ..elements.triangle import Triangle
+from ..quadrature.base import BaseQuadrature
+from ..quadrature.triangle import TriangleQuadrature
 
 
 def grad_dot_grad(g1: np.ndarray, g2: np.ndarray) -> np.ndarray:

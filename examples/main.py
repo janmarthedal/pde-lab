@@ -1,12 +1,12 @@
 import time
 import numpy as np
-from mesh.generate import rect2d
-from mesh.boundary import mesh_boundary
-from assemble.matrix import from_bilinear, grad_dot_grad
-from assemble.vector import from_linear
-from solver import solve
+from pardeqsi.mesh.generate import rect2d
+from pardeqsi.mesh.boundary import mesh_boundary
+from pardeqsi.assemble.matrix import from_bilinear, grad_dot_grad
+from pardeqsi.assemble.vector import from_linear
+from pardeqsi.solver import solve
 
-mesh = rect2d(1.0, 1.0, 9, 9, addz=False)
+mesh = rect2d(1.0, 1.0, 90, 90, addz=False)
 
 # r = Rotation.from_euler('zyx', [90, 45, 30], degrees=True)
 # mesh.points = r.apply(mesh.points)

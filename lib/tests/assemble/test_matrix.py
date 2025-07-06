@@ -1,6 +1,6 @@
 import unittest
-from mesh.generate import rect2d
-from assemble.matrix import from_bilinear, grad_dot_grad
+from pardeqsi.mesh.generate import rect2d
+from pardeqsi.assemble.matrix import from_bilinear, grad_dot_grad
 from numpy.testing import assert_array_almost_equal
 from scipy.sparse import coo_array
 from scipy.spatial.transform import Rotation

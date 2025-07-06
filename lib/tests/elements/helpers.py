@@ -1,5 +1,5 @@
 import numpy as np
-from elements.element import Element
+from pardeqsi.elements.element import Element
 
 # fmt: off
 LINE_SAMPLE_POINTS = np.array([

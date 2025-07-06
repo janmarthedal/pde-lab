@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from elements.quadrilateral import Quadrilateral
+from pardeqsi.elements.quadrilateral import Quadrilateral
 from .helpers import test_element_grad, make_2d_dirs, test_base_points
 
 

@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from elements.line import Line
+from pardeqsi.elements.line import Line
 from .helpers import (
     test_element_grad,
     test_base_points,

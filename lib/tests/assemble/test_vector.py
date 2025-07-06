@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 from scipy.spatial.transform import Rotation
-from mesh.generate import rect2d
-from assemble.vector import from_linear
+from pardeqsi.mesh.generate import rect2d
+from pardeqsi.assemble.vector import from_linear
 
 
 def linear_fn(vals: np.ndarray, coords: np.ndarray):
