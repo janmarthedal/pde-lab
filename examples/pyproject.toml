@@ -1,0 +1,11 @@
+[project]
+name = "examples"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "pardeqsi",
+]
+
+[tool.uv.sources]
+pardeqsi = { path = "../lib" }

@@ -5,7 +5,11 @@ build-backend = "hatchling.build"
 [project]
 name = "pardeqsi"
 version = "0.0.1"
-dependencies = ["numpy", "scipy"]
+dependencies = [
+    "numpy",
+    "scipy",
+]
+requires-python = ">=3.13"
 
 [tool.ruff]
 line-length = 88
@@ -16,4 +20,9 @@ skip-magic-trailing-comma = true
 [tool.pyright]
 exclude = [
     "**/__pycache__"
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.1",
 ]
