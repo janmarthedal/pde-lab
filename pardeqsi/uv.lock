@@ -56,7 +56,7 @@ wheels = [
 
 [[package]]
 name = "pardeqsi"
-version = "0.0.1"
+version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "numpy" },
@@ -70,8 +70,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "numpy" },
-    { name = "scipy" },
+    { name = "numpy", specifier = ">=2.3.4" },
+    { name = "scipy", specifier = ">=1.16.2" },
 ]
 
 [package.metadata.requires-dev]

@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pardeqsi", directory = "../lib" }]
+requires-dist = [{ name = "pardeqsi", directory = "../pardeqsi" }]
 
 [[package]]
 name = "numpy"
@@ -67,8 +67,8 @@ wheels = [
 
 [[package]]
 name = "pardeqsi"
-version = "0.0.1"
-source = { directory = "../lib" }
+version = "0.1.0"
+source = { directory = "../pardeqsi" }
 dependencies = [
     { name = "numpy" },
     { name = "scipy" },
@@ -76,8 +76,8 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "numpy" },
-    { name = "scipy" },
+    { name = "numpy", specifier = ">=2.3.4" },
+    { name = "scipy", specifier = ">=1.16.2" },
 ]
 
 [package.metadata.requires-dev]
