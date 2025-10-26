@@ -9,3 +9,8 @@ dependencies = [
 
 [tool.uv.sources]
 pardeqsi = { path = "../pardeqsi" }
+
+[dependency-groups]
+dev = [
+    "scipy-stubs>=1.16.2.4",
+]
