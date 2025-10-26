@@ -1,8 +1,10 @@
+from typing import override
 import numpy as np
 from .element import Element
 
 
 class Triangle(Element):
+    @override
     def value(self, p: np.ndarray) -> np.ndarray:
         # If p.shape == (2, n)
         # then value(p) == (3, n)
@@ -15,6 +17,7 @@ class Triangle(Element):
         ])
         # fmt: on
 
+    @override
     def gradient(self, p: np.ndarray) -> np.ndarray:
         # If p.shape == (2, n)
         # then gradient(p) == (3, 2, n)

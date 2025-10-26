@@ -1,8 +1,10 @@
+from typing import override
 import numpy as np
 from .element import Element
 
 
 class Quadrilateral(Element):
+    @override
     def value(self, p: np.ndarray) -> np.ndarray:
         s, t = p
         return 0.25 * np.array(
@@ -14,6 +16,7 @@ class Quadrilateral(Element):
             ]
         )
 
+    @override
     def gradient(self, p: np.ndarray) -> np.ndarray:
         s, t = p
         # fmt: off

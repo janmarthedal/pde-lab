@@ -1,8 +1,10 @@
+from typing import override
 import numpy as np
 from .element import Element
 
 
 class Line(Element):
+    @override
     def value(self, p: np.ndarray) -> np.ndarray:
         # If p.shape == (1, n)
         # then value(p) == (2, n)
@@ -14,6 +16,7 @@ class Line(Element):
         ])
         # fmt: on
 
+    @override
     def gradient(self, p: np.ndarray) -> np.ndarray:
         # If p.shape == (1, n)
         # then gradient(p) == (2, 1, n)
