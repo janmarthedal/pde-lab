@@ -8,7 +8,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-pardeqsi = { path = "../pardeqsi" }
+pardeqsi = { path = "../../pardeqsi" }
 
 [dependency-groups]
 dev = [

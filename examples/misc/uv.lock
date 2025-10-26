@@ -16,7 +16,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pardeqsi", directory = "../pardeqsi" }]
+requires-dist = [{ name = "pardeqsi", directory = "../../pardeqsi" }]
 
 [package.metadata.requires-dev]
 dev = [{ name = "scipy-stubs", specifier = ">=1.16.2.4" }]
@@ -103,7 +103,7 @@ numpy = [
 [[package]]
 name = "pardeqsi"
 version = "0.1.0"
-source = { directory = "../pardeqsi" }
+source = { directory = "../../pardeqsi" }
 dependencies = [
     { name = "numpy" },
     { name = "scipy" },
@@ -116,7 +116,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "ruff", specifier = ">=0.14.1" }]
+dev = [
+    { name = "ruff", specifier = ">=0.14.1" },
+    { name = "scipy-stubs", specifier = ">=1.16.2.4" },
+]
 
 [[package]]
 name = "scipy"
