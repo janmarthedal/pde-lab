@@ -9,11 +9,11 @@ from pardeqsi.assemble.vector import from_linear
 from pardeqsi.solver import solve
 
 
-def linear_fn(vals: np.ndarray, coords: np.ndarray):
+def linear_fn(vals: np.ndarray, _coords: np.ndarray):
     return vals
 
 
-mesh = rect2d(1.0, 1.0, 64, 64, addz=False)
+mesh = rect2d(1.0, 1.0, 65, 65, addz=False)
 triangles = mesh.cells[0].data
 
 print(f"points: {mesh.points.shape}")
