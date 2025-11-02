@@ -2,7 +2,14 @@ import numpy as np
 from .mesh import Mesh
 
 
-def rect2d(x: float, y: float, nx: int, ny: int, addz=False) -> Mesh:
+def line(points: np.typing.ArrayLike) -> Mesh:
+    points = np.array(points).reshape(-1, 1)
+    p = np.arange(0, len(points), dtype=np.uint32)
+    lines = np.stack((p[:-1], p[1:]), axis=-1)
+    return Mesh(points, [("line", lines)])
+
+
+def rect2d(x: float, y: float, nx: int, ny: int, addz: bool=False) -> Mesh:
     xs = np.linspace(0.0, x, nx)
     ys = np.linspace(0.0, y, ny)
     points = np.array([(x, y) for y in ys for x in xs])

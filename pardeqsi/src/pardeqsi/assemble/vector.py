@@ -2,8 +2,10 @@ from collections.abc import Callable
 import numpy as np
 from ..mesh.mesh import Mesh
 from ..elements.element import Element
+from ..elements.line import Line
 from ..elements.triangle import Triangle
 from ..quadrature.base import BaseQuadrature
+from ..quadrature.line import LineQuadrature
 from ..quadrature.triangle import TriangleQuadrature
 
 
@@ -66,7 +68,10 @@ def from_linear(
     b = np.zeros((points.shape[0],), dtype=np.float64)
 
     for cell_block in mesh.cells:
-        if cell_block.type == "triangle":
+        if cell_block.type == "line":
+            element = Line()
+            quadrature = LineQuadrature(norder)
+        elif cell_block.type == "triangle":
             element = Triangle()
             quadrature = TriangleQuadrature(norder)
         else:

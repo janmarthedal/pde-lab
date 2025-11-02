@@ -3,8 +3,10 @@ import numpy as np
 from scipy.sparse import coo_array, csr_array
 from ..mesh.mesh import Mesh
 from ..elements.element import Element
+from ..elements.line import Line
 from ..elements.triangle import Triangle
 from ..quadrature.base import BaseQuadrature
+from ..quadrature.line import LineQuadrature
 from ..quadrature.triangle import TriangleQuadrature
 
 
@@ -61,13 +63,18 @@ def _bilinear_for_element_type(
 
 
 def from_bilinear(
-    mesh: Mesh, bilinear_fn: Callable[[np.ndarray, np.ndarray], np.ndarray], norder=1
+    mesh: Mesh,
+    bilinear_fn: Callable[[np.ndarray, np.ndarray], np.ndarray],
+    norder: int = 1,
 ) -> csr_array:
     points = mesh.points
     A = csr_array((points.shape[0], points.shape[0]), dtype=np.float64)
 
     for cell_block in mesh.cells:
-        if cell_block.type == "triangle":
+        if cell_block.type == "line":
+            element = Line()
+            quadrature = LineQuadrature(norder)
+        elif cell_block.type == "triangle":
             element = Triangle()
             quadrature = TriangleQuadrature(norder)
         else:
